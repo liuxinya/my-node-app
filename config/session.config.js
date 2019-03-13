@@ -1,3 +1,4 @@
+'use strict';
 const sessionConfig = {
     key: 'koa:sess', /** (string) cookie key (default is koa:sess) */
     /** (number || 'session') maxAge in ms (default is 1 days) */
@@ -10,6 +11,6 @@ const sessionConfig = {
     signed: true, /** (boolean) signed or not (default true) */
     rolling: false, /** (boolean) Force a session identifier cookie to be set on every response. The expiration is reset to the original maxAge, resetting the expiration countdown. (default is false) */
     renew: false, /** (boolean) renew session when session is nearly expired, so we can always keep user logged in. (default is false)*/
-}
+};
 
-module.exports =  sessionConfig;
+module.exports = sessionConfig;
