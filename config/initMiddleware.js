@@ -1,9 +1,9 @@
 
 
-import cors from 'koa-cors'; 
-import session from 'koa-session';
-import { router } from '../routes';
-import { sessionConfig } from './session.config';
+const cors = require('koa-cors'); 
+const session = require('koa-session');
+const router = require('../routes');
+let sessionConfig = require('./session.config') ;
 function initMiddleware(app) {
     // 跨域
     app.use(cors());
@@ -18,7 +18,7 @@ function initMiddleware(app) {
     .use(router.allowedMethods());
 }
 
-export { initMiddleware };
+module.exports = initMiddleware;
 
 function sessionInit(app) {
     app.use(async (ctx, next) => {

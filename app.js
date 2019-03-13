@@ -1,6 +1,6 @@
 
-import Koa from 'koa';
-import { initMiddleware } from './config/initMiddleware';
+const Koa = require('koa');
+let initMiddleware = require('./config/initMiddleware');
 
 const app = new Koa();
 
