@@ -1,7 +1,7 @@
 'use strict';
 const Koa = require('koa');
-const initMiddleware = require('./config/initMiddleware');
-
+const initMiddleware = require('./setup/initMiddleware');
+const initMongoose = require('./setup/initMongoose');
 const app = new Koa();
 
 // 设置签名的 Cookie 密钥
@@ -18,5 +18,6 @@ process.on('unhandledRejection', (reason, p) => {
 
 // 初始化中间件
 initMiddleware(app);
+initMongoose();
 
 app.listen(3000);

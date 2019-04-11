@@ -3,6 +3,8 @@ const cors = require('@koa/cors');
 const session = require('koa-session');
 const router = require('../routes');
 const sessionConfig = require('./session.config');
+const bodyParser = require('koa-bodyparser')
+const backData = require('../help/backData');
 function initMiddleware(app) {
     // 跨域
     app.use(cors({
@@ -15,8 +17,9 @@ function initMiddleware(app) {
       }));
     // session
     app.use(session(sessionConfig, app));
-    sessionInit(app);
-
+    app.use(bodyParser())
+    app.use(backData);
+    // sessionInit(app);
     // 路由
     app
         .use(router.routes())
@@ -31,7 +34,7 @@ function sessionInit(app) {
         if (ctx.path === '/favicon.ico') return;
         let n = ctx.session.views || 0;
         ctx.session.views = ++n;
-        ctx.body = n + ' views';
+        // ctx.body = n + ' views';
         await next();
     });
 }
