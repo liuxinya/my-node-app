@@ -1,24 +1,20 @@
 const backData = async (ctx, next) => {
-    ctx.success = (data, message) => {
+    ctx.success = (data, msg) => {
         ctx.body = {
-            success: true,
-            status: "200",
-            data: {
-                message: message || '成功',
-                data
-            },
+            succ: true,
+            code: 1,
+            msg: msg || '成功',
+            data: data || true,
         }
     }
-    ctx.fail = (data, messageg) => {
+    ctx.fail = (data, msg) => {
         ctx.body = {
-            success: false,
-            status: "400",
-            data: {
-                message: message || '失败',
-                data
-            }
+            succ: false,
+            code: 0,
+            msg: msg || '失败',
+            data: data || false,
         }
     }
-    next();
+    await next();
 }
 module.exports = backData;

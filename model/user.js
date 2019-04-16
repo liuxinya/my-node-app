@@ -6,18 +6,20 @@ let UserSchema = new Schema({
         type: Number,
         default: 18
     },
-    password: String
+    password: String,
+    token: String
 });
 UserSchema.statics.findUser = async function(options, cb) {
-    // return this.find(options, cb);
-    return new Promise(async (resolve, reject) => {
-        let res = await this.find(options, cb);
-        resolve(res);
-    })
+    return this.find(options, cb);
 }
 UserSchema.statics.addUser = async function(info, cb) {
     let User = this;
     new User(info).save(cb);
+}
+UserSchema.statics.updateUser = async function(option, tarValue, cb) {
+    this.where(option)
+        .update(tarValue, cb)
+    // this.update(option, tarValue, cb);
 }
 const User = mongoose.model('User', UserSchema);
 module.exports = User;
