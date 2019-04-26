@@ -9,17 +9,17 @@ let UserSchema = new Schema({
     password: String,
     token: String
 });
-UserSchema.statics.findUser = async function(options, cb) {
-    return this.find(options, cb);
+UserSchema.statics.findUser = async function(options) {
+    return await this.findOne(options);
 }
 UserSchema.statics.addUser = async function(info, cb) {
     let User = this;
     new User(info).save(cb);
 }
-UserSchema.statics.updateUser = async function(option, tarValue, cb) {
-    this.where(option)
-        .update(tarValue, cb)
-    // this.update(option, tarValue, cb);
+UserSchema.statics.updateUser = async function(option, tarValue) {
+    // this.where(option)
+    //     .update(tarValue, cb)
+    await this.updateOne(option, tarValue);
 }
 const User = mongoose.model('User', UserSchema);
 module.exports = User;

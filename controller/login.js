@@ -1,26 +1,24 @@
 const User = require('../model/user');
-const crypto = require('crypto');
+const encrypt = require('../help/encrypt');
 const token = require('../help/token');
 async function login(ctx, next) {
-    let userInfo = ctx.request.body;
-    let md5 = crypto.createHash("md5");
-    let newPas = md5.update(userInfo.password).digest("hex");
-    let user = await User.findUser({username: userInfo.username});
-    if(user[0]) {
-        if(user[0].password == newPas) {
-            // 更新token
-            await User.updateUser({username: userInfo.username}, {token: token.createToken(userInfo.username)}, (e) => {
-                if(e) ctx.throw(401, 'token更新出错');
-            });
+    try {
+        let userInfo = ctx.request.body;
+        let newPas = encrypt(userInfo.password);
+        let user = await User.findUser({username: userInfo.username, password: newPas});
+        let newToken = token.createToken(userInfo.username);
+        if(user) {
+            await User.updateUser({username: userInfo.username}, {token: newToken});
             ctx.success({
-                username: user[0].username,
-                token: user[0].token
+                username: user.username,
+                token: newToken
             }, '登录成功');
         }else {
-            ctx.fail(null, '密码错误');
+            ctx.fail(null, '用户名或密码错误');
         }
-    }else {
-        ctx.fail(null, '该用户没有注册，请前去注册');
+    }catch(e) {
+        console.error(e);
+        ctx.fail(null, '服务端异常');
     }
 }
 module.exports = login;

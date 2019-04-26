@@ -5,6 +5,7 @@ const router = require('../routes');
 const sessionConfig = require('./session.config');
 const bodyParser = require('koa-bodyparser')
 const backData = require('../help/backData');
+const path = require('path');
 function initMiddleware(app) {
     // 跨域
     app.use(cors({
@@ -17,7 +18,10 @@ function initMiddleware(app) {
       }));
     // session
     app.use(session(sessionConfig, app));
-    app.use(bodyParser())
+    app.use(bodyParser({
+        jsonLimit: '10mb'    // 增大数据的大小限制（图片的存储） 默认1M 超过限制报413错误
+    }))
+    app.use(require('koa-static')(path.join(__dirname, '..', "public")));
     app.use(backData);
     // sessionInit(app);
     // 路由

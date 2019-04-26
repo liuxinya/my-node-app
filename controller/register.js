@@ -1,17 +1,16 @@
 const User = require('../model/user');
-const crypto = require('crypto');
+const encrypt = require('../help/encrypt');
 const token = require('../help/token');
 const register = async (ctx, next) => {
     try {
         let userInfo = ctx.request.body;
-        let md5 = crypto.createHash("md5");
-        let newPas = md5.update(userInfo.password).digest("hex");
+        let newPas = encrypt(userInfo.password)
         let newInfo = {
             password: newPas,
             username: userInfo.username,
         }
         let user = await User.findUser({username: userInfo.username});
-        if(user[0]) {
+        if(user) {
             ctx.fail(false,'用户名被注册！')
         }else {
             User.addUser({
