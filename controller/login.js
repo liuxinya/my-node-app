@@ -6,6 +6,7 @@ async function login(ctx, next) {
         let userInfo = ctx.request.body;
         let newPas = encrypt(userInfo.password);
         let user = await User.findUser({username: userInfo.username, password: newPas});
+        console.log(user)
         let newToken = token.createToken(userInfo.username);
         if(user) {
             await User.updateUser({username: userInfo.username}, {token: newToken});

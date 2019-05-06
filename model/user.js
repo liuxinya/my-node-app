@@ -10,7 +10,9 @@ let UserSchema = new Schema({
     token: String
 });
 UserSchema.statics.findUser = async function(options) {
-    return await this.findOne(options);
+    return await this.findOne(options, {
+        password : 0 // 返回结果不包含密码字段
+    });
 }
 UserSchema.statics.addUser = async function(info, cb) {
     let User = this;

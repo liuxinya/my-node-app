@@ -13,4 +13,26 @@ async function saveImage(thumbUrl) {
         })
     })
 }
-module.exports = saveImage;
+
+async function deleteFile(fileName) {
+    return new Promise(resolve => {
+        //异步 文件删除(判断文件是否存在)
+        let imgPath = path.join(__dirname, '../public/imgs', fileName)
+        // console.log(imgPath)
+        fs.exists(imgPath, async function(exist) {
+            if(exist) {
+                await fs.unlink(imgPath, function(err) {
+                    if(err) {
+                        console.error(err);
+                        resolve(false)
+                    }
+                    resolve(true)
+                });
+            }
+        });  
+    })
+}
+module.exports = {
+    saveImage,
+    deleteFile
+}

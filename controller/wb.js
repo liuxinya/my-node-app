@@ -1,6 +1,6 @@
 const Weibo = require('../model/weibo');
 const WeiboTypeList = require('../model/weiboTypeList');
-const saveImage = require('../help/fileHelper');
+const fileHelper = require('../help/fileHelper');
 const tokenHelp = require('../help/token');
 const token = require('../help/token.js');
 const getGapNowToBefore = require('../help/time');
@@ -13,7 +13,7 @@ async function write(ctx, next) {
         let imgList = data.imgList;
         if(imgList.length > 0) {
             for(let i = 0; i < imgList.length; i++ ) {
-                let imgUrl = await saveImage(imgList[i].thumbUrl);
+                let imgUrl = await fileHelper.saveImage(imgList[i].thumbUrl);
                 imgUrlList.push(imgUrl);
             }
         }
@@ -84,11 +84,23 @@ async function deleteWb(ctx, next) {
         // 用登录用户名和微博id 去查找删除
         let username = token.getUserNameFromToken(ctx);
         let reqParam = ctx.query;
+        let findRes = await Weibo.findWeiboOfOne({_id: reqParam.id});
+        let imgList = findRes.imgList;
         let res = await Weibo.deleteWeibo({
             _id: reqParam.id,
             creater: username
         });
-        res.ok && res.deletedCount == 1? ctx.success(true, '成功'): ctx.fail(false, '失败');
+        if(res.ok && res.deletedCount == 1) {
+            for(let i = 0; i < imgList.length; i++ ) {
+                // 图片也删除
+                let flag = await fileHelper.deleteFile(imgList[i]);
+                // console.log(flag)
+                if(!flag) console.error(`删除图片${imgList[i]}失败`);
+            }
+            ctx.success(true, '成功');
+        }else {
+            ctx.fail(false, '失败');
+        }
     }catch(e) {
         console.error(e);
         ctx.fail(null, '服务端异常');
